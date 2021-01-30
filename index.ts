@@ -4,12 +4,13 @@ import bodyParser from "body-parser";
 import userController from "./controllers/users";
 import postController from "./controllers/posts";
 import cookieParser from "cookie-parser";
+require("dotenv").config();
 
 const app = express();
 const PORT = 9000;
 
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: process.env.FRONTEND || "http://localhost:3000",
     credentials: true,
 }));
 
