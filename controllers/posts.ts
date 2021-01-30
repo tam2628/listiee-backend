@@ -7,6 +7,7 @@ import { authorization } from "./../middlewares";
 import fetch from "node-fetch";
 import { Post, User } from "../models";
 import { v4 as uuidV4 } from "uuid";
+import cors from 'cors';
 
 const router = express.Router();
 
@@ -31,7 +32,14 @@ const upload = multer({ storage: storage });
 
 router.post(
     "/create",
-    ...[authorization, upload.any()],
+    ...[
+        authorization,
+        cors({
+        origin: process.env.FRONTEND || "http://localhost:3000",
+        credentials: true,
+        }),
+        upload.any()
+    ],
     async (req, res) => {
     const {postText, latitude, longitude} = req.body;
     const pictureURL = ((req.files as unknown as File[])[0] as any).location;

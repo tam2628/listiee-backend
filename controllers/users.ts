@@ -76,7 +76,9 @@ router.post("/signup", async (req, res) => {
     res.cookie("rftc", refreshToken, {
         httpOnly: true,
         sameSite: 'none',
-        secure:true });
+        secure:true,
+        maxAge: Date.now(),
+    });
     res.status(201).send(JSON.stringify({
         accessToken,
         ...userData

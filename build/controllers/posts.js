@@ -21,6 +21,7 @@ const middlewares_1 = require("./../middlewares");
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const models_1 = require("../models");
 const uuid_1 = require("uuid");
+const cors_1 = __importDefault(require("cors"));
 const router = express_1.default.Router();
 // router.use(authorization);
 aws_sdk_1.default.config.update({
@@ -36,7 +37,14 @@ const storage = multer_s3_1.default({
     acl: "public-read"
 });
 const upload = multer_1.default({ storage: storage });
-router.post("/create", ...[middlewares_1.authorization, upload.any()], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/create", ...[
+    middlewares_1.authorization,
+    cors_1.default({
+        origin: process.env.FRONTEND || "http://localhost:3000",
+        credentials: true,
+    }),
+    upload.any()
+], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { postText, latitude, longitude } = req.body;
     const pictureURL = req.files[0].location;
     const psCallURL = `http://api.positionstack.com/v1/reverse?access_key=${process.env.PS_KEY}&query=${latitude},${longitude}&output=json`;
