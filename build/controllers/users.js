@@ -67,7 +67,11 @@ router.post("/signup", (req, res) => __awaiter(void 0, void 0, void 0, function*
         firstName: user.firstName,
         lastName: user.lastName
     };
-    res.cookie("rftc", refreshToken, { httpOnly: true, sameSite: 'none' });
+    res.cookie("rftc", refreshToken, {
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true
+    });
     res.status(201).send(JSON.stringify(Object.assign({ accessToken }, userData)));
 }));
 router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -99,7 +103,11 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
     const accessToken = generateToken(payload, SECRET);
     const refreshTokenExp = Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 30); // one month duration
     const refreshToken = generateToken(payload, SECRET, refreshTokenExp);
-    res.cookie("rftc", refreshToken, { httpOnly: true, sameSite: 'none' });
+    res.cookie("rftc", refreshToken, {
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true
+    });
     res.status(200).send(JSON.stringify(Object.assign({ accessToken }, userData)));
 }));
 router.get('/refresh', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -136,6 +144,8 @@ router.post("/logout", (req, res) => {
     res.cookie("rftc", {}, {
         httpOnly: true,
         maxAge: Date.now() - 100,
+        sameSite: 'none',
+        secure: true,
     });
     res.send();
 });
