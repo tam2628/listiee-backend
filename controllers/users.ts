@@ -122,7 +122,9 @@ router.post('/login', async (req, res) => {
     res.cookie("rftc", refreshToken, {
         httpOnly: true,
         sameSite: 'none',
-        secure:true });
+        secure:true,
+        maxAge: Date.now(),
+    });
     res.status(200).send(JSON.stringify({
         accessToken,
         ...userData
@@ -139,7 +141,12 @@ router.get('/refresh', async (req, res) => {
         payload = jwt.verify(refreshToken, SECRET);
     } catch(err:any) {
         console.log(err);
-        res.cookie(SECRET, {}, { maxAge: Math.floor(Date.now() / 1000) - 1000 });
+        res.cookie("rftc", {}, {
+            httpOnly: true,
+            maxAge: -100,
+            sameSite: 'none',
+            secure: true,
+        });
         return res.sendStatus(400);
     }
     console.log(payload);
@@ -166,7 +173,7 @@ router.get('/refresh', async (req, res) => {
 router.post("/logout", (req, res) => {
     res.cookie("rftc", {}, {
         httpOnly: true,
-        maxAge: Date.now() - 100,
+        maxAge: -100,
         sameSite: 'none',
         secure: true,
     });

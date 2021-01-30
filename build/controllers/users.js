@@ -106,7 +106,8 @@ router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* 
     res.cookie("rftc", refreshToken, {
         httpOnly: true,
         sameSite: 'none',
-        secure: true
+        secure: true,
+        maxAge: Date.now(),
     });
     res.status(200).send(JSON.stringify(Object.assign({ accessToken }, userData)));
 }));
@@ -121,7 +122,12 @@ router.get('/refresh', (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
     catch (err) {
         console.log(err);
-        res.cookie(SECRET, {}, { maxAge: Math.floor(Date.now() / 1000) - 1000 });
+        res.cookie("rftc", {}, {
+            httpOnly: true,
+            maxAge: -100,
+            sameSite: 'none',
+            secure: true,
+        });
         return res.sendStatus(400);
     }
     console.log(payload);
@@ -143,7 +149,7 @@ router.get('/refresh', (req, res) => __awaiter(void 0, void 0, void 0, function*
 router.post("/logout", (req, res) => {
     res.cookie("rftc", {}, {
         httpOnly: true,
-        maxAge: Date.now() - 100,
+        maxAge: -100,
         sameSite: 'none',
         secure: true,
     });
