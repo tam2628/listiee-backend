@@ -11,7 +11,7 @@ const posts_1 = __importDefault(require("./controllers/posts"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 require("dotenv").config();
 const app = express_1.default();
-const PORT = 9000;
+const PORT = process.env.PORT || 9000;
 app.use(cors_1.default({
     origin: process.env.FRONTEND || "http://localhost:3000",
     credentials: true,
